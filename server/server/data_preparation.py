@@ -1,4 +1,5 @@
 import pandas as pd
+import logging
 
 from server.helper_functions_and_constants import (
     DFS,
@@ -9,11 +10,18 @@ from server.helper_functions_and_constants import (
     ignore_inflation,
 )
 
+logger = logging.getLogger("preparation")
+
 
 def preprocess(**kwargs):
 
+    logger.log(level=1,msg=DFS)
+
     loaded_objects = DFS["loaded_objects"]
+    logger.log(level=1,msg=loaded_objects)
+
     cpi_df = DFS["cpi_df"]
+    logger.log(level=1,msg=cpi_df)
 
     cpi_reference = cpi_df[cpi_df["year"] == 2023]["cpi_index"].values
     data = pd.DataFrame([kwargs])

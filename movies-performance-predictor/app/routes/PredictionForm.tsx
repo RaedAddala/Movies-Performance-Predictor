@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import type { MoviePrediction } from '../types';
 import { GENRES, LANGUAGES, COUNTRIES, MPA_RATINGS } from '../types';
 import type { Route } from './+types/PredictionForm';
+import { submitPrediction } from '~/services/moviePredictionService';
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -16,8 +17,17 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+interface FormError {
+  title: string;
+  description: string;
+}
+
 const PredictionForm: FC = () => {
   const navigate = useNavigate();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<FormError | null>(null);
+
   const [formData, setFormData] = useState({
     title: '',
     duration: 90,
@@ -35,27 +45,57 @@ const PredictionForm: FC = () => {
     productionCompanies: [''] as string[],
   });
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const prediction: MoviePrediction = {
-      ...formData,
-      id: crypto.randomUUID(),
-      predictedAt: new Date().toISOString(),
-      openingWeekendGross: Math.random() * 50000000,
-      grossWorldwide: Math.random() * 500000000,
-      awards: Math.floor(Math.random() * 10),
-      nominations: Math.floor(Math.random() * 20),
-      rating: Math.random() * 10,
-    };
+    setIsLoading(true);
+    setError(null);
 
-    const predictions = JSON.parse(localStorage.getItem('predictions') || '[]');
-    localStorage.setItem(
-      'predictions',
-      JSON.stringify([prediction, ...predictions]),
-    );
+    try {
+      // Filter out empty strings from arrays
+      const cleanedFormData = {
+        ...formData,
+        stars: formData.stars.filter(star => star.trim() !== ''),
+        writers: formData.writers.filter(writer => writer.trim() !== ''),
+        productionCompanies: formData.productionCompanies.filter(
+          company => company.trim() !== '',
+        ),
+      };
 
-    navigate('/history');
+      const response = await submitPrediction(cleanedFormData);
+
+      const prediction: MoviePrediction = {
+        ...cleanedFormData,
+        id: crypto.randomUUID(),
+        predictedAt: new Date().toISOString(),
+        openingWeekendGross:
+          response.received.predicted_openingWeekendGross || 0,
+        grossWorldwide: response.received.predicted_grossWorldwide || 0,
+        awards: response.received.predicted_wins || 0,
+        nominations: response.received.predicted_nominations || 0,
+        rating: response.received.predicted_IMDB_Rating || 0,
+      };
+
+      const predictions = JSON.parse(
+        localStorage.getItem('predictions') || '[]',
+      );
+      localStorage.setItem(
+        'predictions',
+        JSON.stringify([prediction, ...predictions]),
+      );
+
+      navigate('/history');
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'An unexpected error occurred';
+      setError({
+        title: 'Submission Error',
+        description: errorMessage,
+      });
+      console.error('Prediction error:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleReset = () => {
@@ -75,24 +115,50 @@ const PredictionForm: FC = () => {
       director: '',
       productionCompanies: [''],
     });
+
+    setError(null);
   };
 
   return (
     <div className="max-w-4xl mx-auto">
+      {error && (
+        <div className="space-y-6">
+          <div className="alert alert-error">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="stroke-current shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <div>
+              <h3 className="font-bold">{error.title}</h3>
+              <div className="text-xs">{error.description}</div>
+            </div>
+          </div>
+        </div>
+      )}
       <h1 className="text-3xl font-bold mb-8">New Movie Prediction</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-12 justify-center">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title">Basic Information</h2>
-
-            <div className="form-control">
+            <h2 className="card-title text-xl font-bold my-2">
+              Basic Information
+            </h2>
+            <div className="form-control my-1">
               <label className="label">
                 <span className="label-text">Movie Title</span>
               </label>
               <input
                 type="text"
-                className="input input-bordered"
+                className="input input-bordered mx-3 w-92"
                 value={formData.title}
                 onChange={e =>
                   setFormData({ ...formData, title: e.target.value })
@@ -101,12 +167,12 @@ const PredictionForm: FC = () => {
               />
             </div>
 
-            <div className="form-control">
+            <div className="form-control my-1">
               <label className="label">
                 <span className="label-text">Movie Description</span>
               </label>
               <textarea
-                className="textarea textarea-bordered"
+                className="textarea textarea-bordered mx-3"
                 value={formData.description}
                 onChange={e =>
                   setFormData({ ...formData, description: e.target.value })
@@ -114,13 +180,13 @@ const PredictionForm: FC = () => {
               />
             </div>
 
-            <div className="form-control">
+            <div className="form-control my-1">
               <label className="label">
                 <span className="label-text">Duration (minutes)</span>
               </label>
               <input
                 type="number"
-                className="input input-bordered"
+                className="input input-bordered mx-3"
                 value={formData.duration}
                 onChange={e =>
                   setFormData({
@@ -134,12 +200,12 @@ const PredictionForm: FC = () => {
               />
             </div>
 
-            <div className="form-control">
+            <div className="form-control my-1">
               <label className="label">
                 <span className="label-text">MPA Rating</span>
               </label>
               <select
-                className="select select-bordered"
+                className="select select-bordered mx-3 w-92"
                 value={formData.mpaRating}
                 onChange={e =>
                   setFormData({ ...formData, mpaRating: e.target.value })
@@ -154,13 +220,13 @@ const PredictionForm: FC = () => {
               </select>
             </div>
 
-            <div className="form-control">
+            <div className="form-control my-1">
               <label className="label">
                 <span className="label-text">Release Date</span>
               </label>
               <input
                 type="date"
-                className="input input-bordered"
+                className="input input-bordered mx-3 w-90"
                 value={formData.releaseDate}
                 onChange={e =>
                   setFormData({ ...formData, releaseDate: e.target.value })
@@ -173,11 +239,13 @@ const PredictionForm: FC = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title">Categories</h2>
+            <h2 className="card-title text-xl font-bold my-2">Categories</h2>
 
-            <div className="form-control">
+            <div className="form-control my-1">
               <label className="label">
-                <span className="label-text">Genres</span>
+                <span className="label-text text-xl font-bold my-3">
+                  Genres
+                </span>
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {GENRES.map(genre => (
@@ -199,9 +267,11 @@ const PredictionForm: FC = () => {
               </div>
             </div>
 
-            <div className="form-control">
+            <div className="form-control my-1">
               <label className="label">
-                <span className="label-text">Languages</span>
+                <span className="label-text text-xl font-bold my-3">
+                  Languages
+                </span>
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {LANGUAGES.map(language => (
@@ -223,9 +293,11 @@ const PredictionForm: FC = () => {
               </div>
             </div>
 
-            <div className="form-control">
+            <div className="form-control my-1">
               <label className="label">
-                <span className="label-text">Countries</span>
+                <span className="label-text text-xl font-bold my-3">
+                  Countries
+                </span>
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {COUNTRIES.map(country => (
@@ -251,15 +323,17 @@ const PredictionForm: FC = () => {
 
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <h2 className="card-title">Production Details</h2>
+            <h2 className="card-title text-xl font-bold my-2">
+              Production Details
+            </h2>
 
-            <div className="form-control">
+            <div className="form-control py-1">
               <label className="label">
                 <span className="label-text">Budget (USD)</span>
               </label>
               <input
                 type="number"
-                className="input input-bordered"
+                className="input input-bordered mx-3 w-92"
                 value={formData.budget}
                 onChange={e =>
                   setFormData({ ...formData, budget: parseInt(e.target.value) })
@@ -270,13 +344,13 @@ const PredictionForm: FC = () => {
               />
             </div>
 
-            <div className="form-control">
+            <div className="form-control py-1">
               <label className="label">
                 <span className="label-text">Filming Location</span>
               </label>
               <input
                 type="text"
-                className="input input-bordered"
+                className="input input-bordered mx-3 w-88"
                 value={formData.filming_location}
                 onChange={e =>
                   setFormData({ ...formData, filming_location: e.target.value })
@@ -284,7 +358,7 @@ const PredictionForm: FC = () => {
               />
             </div>
 
-            <div className="form-control">
+            <div className="form-control py-1">
               <label className="label">
                 <span className="label-text">Stars (up to 10)</span>
               </label>
@@ -292,7 +366,7 @@ const PredictionForm: FC = () => {
                 <div key={index} className="flex gap-2 mb-2">
                   <input
                     type="text"
-                    className="input input-bordered flex-1"
+                    className="input input-bordered my-1 flex-1"
                     value={star}
                     onChange={e => {
                       const newStars = [...formData.stars];
@@ -318,7 +392,7 @@ const PredictionForm: FC = () => {
               ))}
             </div>
 
-            <div className="form-control">
+            <div className="form-control py-1">
               <label className="label">
                 <span className="label-text">Writers (up to 3)</span>
               </label>
@@ -326,7 +400,7 @@ const PredictionForm: FC = () => {
                 <div key={index} className="flex gap-2 mb-2">
                   <input
                     type="text"
-                    className="input input-bordered flex-1"
+                    className="input input-bordered my-1 flex-1"
                     value={writer}
                     onChange={e => {
                       const newWriters = [...formData.writers];
@@ -354,13 +428,13 @@ const PredictionForm: FC = () => {
               ))}
             </div>
 
-            <div className="form-control">
+            <div className="form-control py-1">
               <label className="label">
                 <span className="label-text">Director</span>
               </label>
               <input
                 type="text"
-                className="input input-bordered"
+                className="input input-bordered mx-3 flex-1"
                 value={formData.director}
                 onChange={e =>
                   setFormData({ ...formData, director: e.target.value })
@@ -369,7 +443,7 @@ const PredictionForm: FC = () => {
               />
             </div>
 
-            <div className="form-control">
+            <div className="form-control py-1">
               <label className="label">
                 <span className="label-text">
                   Production Companies (up to 5)
@@ -379,7 +453,7 @@ const PredictionForm: FC = () => {
                 <div key={index} className="flex gap-2 mb-2">
                   <input
                     type="text"
-                    className="input input-bordered flex-1"
+                    className="input input-bordered my-1 flex-1"
                     value={company}
                     onChange={e => {
                       const newCompanies = [...formData.productionCompanies];
@@ -419,12 +493,17 @@ const PredictionForm: FC = () => {
           <button
             type="button"
             onClick={handleReset}
+            disabled={isLoading}
             className="btn btn-outline"
           >
             Reset
           </button>
-          <button type="submit" className="btn btn-primary">
-            Predict Success
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Predicting...' : 'Submit Prediction'}
           </button>
         </div>
       </form>

@@ -2,10 +2,6 @@ import joblib
 import numpy as np
 import pandas as pd
 
-# import os
-
-# print("Current working directory:", os.getcwd())
-
 DATA_PATH = "./server/data/"
 DFS = {
     "actors_df": pd.read_csv(DATA_PATH + "Actors_data.csv"),
@@ -14,8 +10,8 @@ DFS = {
     "loaded_objects": joblib.load(DATA_PATH + "preprocessing_objects.pkl"),
     "cpi_df": pd.read_csv(DATA_PATH + "cpi_data.csv"),
     "directors_df": pd.read_csv(DATA_PATH + "Directors_data.csv"),
-    "financial_models": joblib.load(DATA_PATH + "financial_models.pkl"),
-    "artistic_models": joblib.load(DATA_PATH + "artistic_models.pkl"),
+    # "financial_models": joblib.load(DATA_PATH + "financial_models.pkl"),
+    # "artistic_models": joblib.load(DATA_PATH + "artistic_models.pkl"),
 }
 
 
@@ -37,7 +33,9 @@ def get_season(month):
 def ignore_inflation(value, year, cpi_reference, cpi_df):
     if year > 2023:
         year = 2023
-    cpi_year = cpi_df[cpi_df["year"] == year[0]]["cpi_index"].values
+
+    cpi_df = DFS["cpi_df"]
+    cpi_year = cpi_df[cpi_df["year"] == year]["cpi_index"].values
     return value * (cpi_reference / cpi_year[0])
 
 
@@ -66,7 +64,7 @@ def calculate_film_weight_normalized(actors_list):
             if str(actor).strip().lower() in actors_df["Actor"].str.lower().values
             else 0
         )
-        # print(actor, Wi)
+
         total_weight += Wi * Ci
     N = len(actors_list)
     return total_weight / N if N > 0 else 0
