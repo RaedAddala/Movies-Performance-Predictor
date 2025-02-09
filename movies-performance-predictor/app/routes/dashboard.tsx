@@ -14,8 +14,11 @@ import type { Route } from './+types/dashboard';
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Movie Predictor Dashboard" },
-    { name: "description", content: "Welcome to the movie predictor Dashboard!" },
+    { title: 'Movie Predictor Dashboard' },
+    {
+      name: 'description',
+      content: 'Welcome to the movie predictor Dashboard!',
+    },
   ];
 }
 
@@ -63,7 +66,7 @@ const Dashboard: FC = () => {
           </div>
         </div>
 
-        <div className="card bg-gradient-to-br from-secondary-500 to-secondary-600 text-white shadow-md hover:shadow-elevated transition-all duration-300">
+        <div className="card bg-gradient-to-br from-secondary-500 to-secondary-600 text-white shadow-md hover:shadow-glow transition-all duration-300">
           <div className="card-body">
             <div className="flex justify-between items-center">
               <div>
@@ -79,7 +82,7 @@ const Dashboard: FC = () => {
           </div>
         </div>
 
-        <div className="card bg-gradient-to-br from-accent-500 to-accent-600 text-white shadow-md hover:shadow-elevated transition-all duration-300">
+        <div className="card bg-gradient-to-br from-accent-500 to-accent-600 text-white shadow-md hover:shadow-glow transition-all duration-300">
           <div className="card-body">
             <div className="flex justify-between items-center">
               <div>
@@ -93,7 +96,7 @@ const Dashboard: FC = () => {
           </div>
         </div>
 
-        <div className="card bg-gradient-to-br from-primary-600 to-secondary-600 text-white shadow-md hover:shadow-elevated transition-all duration-300">
+        <div className="card bg-gradient-to-br from-primary-600 to-secondary-600 text-white shadow-md hover:shadow-glow transition-all duration-300">
           <div className="card-body">
             <div className="flex justify-between items-center">
               <div>

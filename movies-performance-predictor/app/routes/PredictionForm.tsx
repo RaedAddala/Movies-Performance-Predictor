@@ -1,23 +1,18 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import type { FC, FormEvent } from 'react';
 
 import { useNavigate } from 'react-router';
-import type {
-  MoviePrediction,
-} from '../types';
-import  {
-  GENRES,
-  LANGUAGES,
-  COUNTRIES,
-  MPA_RATINGS,
-} from '../types';
+import type { MoviePrediction } from '../types';
+import { GENRES, LANGUAGES, COUNTRIES, MPA_RATINGS } from '../types';
 import type { Route } from './+types/PredictionForm';
-
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Movie Predictor Prediction Form" },
-    { name: "description", content: "Welcome to the movie predictor PredictionForm" },
+    { title: 'Movie Predictor Prediction Form' },
+    {
+      name: 'description',
+      content: 'Welcome to the movie predictor PredictionForm',
+    },
   ];
 }
 

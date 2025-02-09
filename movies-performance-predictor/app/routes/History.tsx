@@ -2,11 +2,10 @@ import type { FC } from 'react';
 import type { MoviePrediction } from '../types';
 import type { Route } from './+types/History';
 
-
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Movie Predictor History" },
-    { name: "description", content: "Welcome to the movie predictor History!" },
+    { title: 'Movie Predictor History' },
+    { name: 'description', content: 'Welcome to the movie predictor History!' },
   ];
 }
 
