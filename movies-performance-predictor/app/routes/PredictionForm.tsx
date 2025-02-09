@@ -21,7 +21,9 @@ const PredictionForm: FC = () => {
   const [formData, setFormData] = useState({
     title: '',
     duration: 90,
-    mpaRating: 'PG-13',
+    mpaRating: 'All Audiences',
+    description: '',
+    filming_location: '',
     releaseDate: new Date().toISOString().split('T')[0],
     genres: [] as string[],
     languages: [] as string[],
@@ -42,7 +44,6 @@ const PredictionForm: FC = () => {
       predictedAt: new Date().toISOString(),
       openingWeekendGross: Math.random() * 50000000,
       grossWorldwide: Math.random() * 500000000,
-      grossUsCanada: Math.random() * 200000000,
       awards: Math.floor(Math.random() * 10),
       nominations: Math.floor(Math.random() * 20),
       rating: Math.random() * 10,
@@ -59,6 +60,8 @@ const PredictionForm: FC = () => {
 
   const handleReset = () => {
     setFormData({
+      description: '',
+      filming_location: '',
       title: '',
       duration: 90,
       mpaRating: 'PG-13',
@@ -70,7 +73,7 @@ const PredictionForm: FC = () => {
       stars: [''],
       writers: [''],
       director: '',
-      productionCompanies: [''],
+      productionCompanies: ['']
     });
   };
 
@@ -95,6 +98,19 @@ const PredictionForm: FC = () => {
                   setFormData({ ...formData, title: e.target.value })
                 }
                 required
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Movie Description</span>
+              </label>
+              <textarea
+                className="textarea textarea-bordered"
+                value={formData.description}
+                onChange={e =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
               />
             </div>
 
@@ -251,6 +267,20 @@ const PredictionForm: FC = () => {
                 min="100"
                 max="500000000"
                 required
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Filming Location</span>
+              </label>
+              <input
+                type="text"
+                className="input input-bordered"
+                value={formData.filming_location}
+                onChange={e =>
+                  setFormData({ ...formData, filming_location: e.target.value })
+                }
               />
             </div>
 

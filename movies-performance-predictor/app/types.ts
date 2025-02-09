@@ -1,6 +1,8 @@
 export interface MoviePrediction {
   // Input fields
   title: string;
+  description: string;
+  filming_location: string;
   duration: number;
   mpaRating: string;
   releaseDate: string;
@@ -16,7 +18,6 @@ export interface MoviePrediction {
   // Output fields
   openingWeekendGross: number;
   grossWorldwide: number;
-  grossUsCanada: number;
   awards: number;
   nominations: number;
   rating: number;
@@ -46,7 +47,7 @@ export const GENRES = [
   'Western',
   'Biography',
   'war',
-  'other',
+  'other_genres',
 ];
 
 export const LANGUAGES = [
@@ -67,52 +68,27 @@ export const LANGUAGES = [
 ];
 
 export const COUNTRIES = [
-  'United States',
-  'United Kingdom',
-  'Italy',
-  'France',
-  'West Germany',
-  'Ireland',
-  'Canada',
-  'Mexico',
-  'Spain',
-  'Japan',
-  'Belgium',
-  'Sweden',
-  'Hong Kong',
-  'Australia',
-  'Switzerland',
-  'India',
-  'Netherlands',
-  'China',
-  'Germany',
-  'North Africa',
-  'Sub-Saharan Africa',
-  'Middle East',
-  'Asia',
-  'Eastern Europe',
-  'Balkans',
-  'Western & Southern Europe',
-  'Nordic countries',
-  'Caribbean',
-  'South America',
-  'Other',
+  "United States",
+  "France",
+  "Canada",
+  "Spain",
+  "Japan",
+  "India",
+  "Mexico",
+  "Italy",
+  "Australia",
+  "Germany",
+  "United Kingdom",
+  "China",
+  "Asian countries",
+  "European countries",
+  "Nordic countries",
+  "Other_regions"
 ];
 
 export const MPA_RATINGS = [
-  'R',
-  'PG-13',
-  'PG',
-  'G',
+  'All Audiences',
+  'Teen',
+  'Mature',
   'Unrated',
-  'TV-MA',
-  'TV-14',
-  'TV-PG',
-  'X',
-  'Approved',
-  'TV-G',
-  '16+',
-  '18+',
-  '13+',
-  'TV-Y7',
 ];
