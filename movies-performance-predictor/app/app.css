@@ -1,15 +1,107 @@
 @import "tailwindcss";
+@plugin "daisyui";
+@plugin "@tailwindcss/typography";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  --font-sans: "Inter var", ui-sans-serif, system-ui, -apple-system;
+  --font-serif: "Inter var", ui-serif, Georgia;
+
+
+  --font-size-xs: 0.75rem;
+  --line-height-xs: 1rem;
+  --font-size-sm: 0.875rem;
+  --line-height-sm: 1.25rem;
+  --font-size-base: 1rem;
+  --line-height-base: 1.5rem;
+  --font-size-lg: 1.125rem;
+  --line-height-lg: 1.75rem;
+  --font-size-xl: 1.25rem;
+  --line-height-xl: 1.75rem;
+  --font-size-2xl: 1.5rem;
+  --line-height-2xl: 2rem;
+  --font-size-3xl: 1.875rem;
+  --line-height-3xl: 2.25rem;
+  --font-size-4xl: 2.25rem;
+  --line-height-4xl: 2.5rem;
+  --font-size-5xl: 3rem;
+  --line-height-5xl: 1;
+
+
+  --spacing-18: 4.5rem;
+  --spacing-112: 28rem;
+  --spacing-128: 32rem;
+
+
+  --color-primary-50: #eef9ff;
+  --color-primary-100: #dcf3ff;
+  --color-primary-200: #b3e7ff;
+  --color-primary-300: #66d3ff;
+  --color-primary-400: #1ab8ff;
+  --color-primary-500: #00a3ff;
+  --color-primary-600: #0082d9;
+  --color-primary-700: #0067af;
+  --color-primary-800: #005791;
+  --color-primary-900: #004a77;
+
+  --color-secondary-50: #f4f7fb;
+  --color-secondary-100: #e9eff7;
+  --color-secondary-200: #cddeee;
+  --color-secondary-300: #a3c3e0;
+  --color-secondary-400: #72a1ce;
+  --color-secondary-500: #4f84bc;
+  --color-secondary-600: #3b699f;
+  --color-secondary-700: #315581;
+  --color-secondary-800: #2c486b;
+  --color-secondary-900: #283d5a;
+
+  --color-accent-50: #fdf4ff;
+  --color-accent-100: #fae8ff;
+  --color-accent-200: #f5d0fe;
+  --color-accent-300: #f0abfc;
+  --color-accent-400: #e879f9;
+  --color-accent-500: #d946ef;
+  --color-accent-600: #c026d3;
+  --color-accent-700: #a21caf;
+  --color-accent-800: #86198f;
+  --color-accent-900: #701a75;
+
+
+  --shadow-soft: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.01);
+  --shadow-glow: 0 0 15px rgba(0, 163, 255, 0.5);
 }
 
-html,
-body {
-  @apply bg-white dark:bg-gray-950;
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+@utilities {
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+
+@daisyui {
+  .theme-moviepredictor {
+    --color-primary: #00a3ff;
+    --color-primary-content: #ffffff;
+    --color-secondary: #4f84bc;
+    --color-secondary-content: #ffffff;
+    --color-accent: #d946ef;
+    --color-accent-content: #ffffff;
+    --color-neutral: #283d5a;
+    --color-neutral-content: #ffffff;
+    --color-base-100: #ffffff;
+    --color-base-200: #f4f7fb;
+    --color-base-300: #e9eff7;
+    --color-info: #66d3ff;
+    --color-success: #87d039;
+    --color-warning: #e2d562;
+    --color-error: #ff6b6b;
   }
 }
