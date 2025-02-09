@@ -64,7 +64,7 @@ const PredictionForm: FC = () => {
       filming_location: '',
       title: '',
       duration: 90,
-      mpaRating: 'PG-13',
+      mpaRating: 'All Audiences',
       releaseDate: new Date().toISOString().split('T')[0],
       genres: [],
       languages: [],
@@ -73,7 +73,7 @@ const PredictionForm: FC = () => {
       stars: [''],
       writers: [''],
       director: '',
-      productionCompanies: ['']
+      productionCompanies: [''],
     });
   };
 

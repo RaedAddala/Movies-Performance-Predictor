@@ -68,27 +68,22 @@ export const LANGUAGES = [
 ];
 
 export const COUNTRIES = [
-  "United States",
-  "France",
-  "Canada",
-  "Spain",
-  "Japan",
-  "India",
-  "Mexico",
-  "Italy",
-  "Australia",
-  "Germany",
-  "United Kingdom",
-  "China",
-  "Asian countries",
-  "European countries",
-  "Nordic countries",
-  "Other_regions"
+  'United States',
+  'France',
+  'Canada',
+  'Spain',
+  'Japan',
+  'India',
+  'Mexico',
+  'Italy',
+  'Australia',
+  'Germany',
+  'United Kingdom',
+  'China',
+  'Asian countries',
+  'European countries',
+  'Nordic countries',
+  'Other_regions',
 ];
 
-export const MPA_RATINGS = [
-  'All Audiences',
-  'Teen',
-  'Mature',
-  'Unrated',
-];
+export const MPA_RATINGS = ['All Audiences', 'Teen', 'Mature', 'Unrated'];
