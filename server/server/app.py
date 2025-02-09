@@ -1,7 +1,6 @@
 from flask import Flask, send_from_directory, jsonify, request
 from server.data_preparation import preprocess
-
-# from modeling import model
+from server.modeling import model
 
 
 app = Flask(
@@ -54,7 +53,7 @@ def post_data():
     print(preprocessed_data.columns)
     print(len(preprocessed_data.columns))
 
-    output_data = {}  # model(preprocessed_data, year)
+    output_data = model(preprocessed_data, year)
     return jsonify({"received": output_data})
 
 

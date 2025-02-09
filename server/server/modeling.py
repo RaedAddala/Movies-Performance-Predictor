@@ -1,4 +1,7 @@
+import logging
 from server.helper_functions_and_constants import DFS, rescale
+
+logger = logging.getLogger("preparation")
 
 
 def model(processed_data_df, year):
@@ -8,11 +11,11 @@ def model(processed_data_df, year):
     cpi_reference = cpi_df[cpi_df["year"] == 2023]["cpi_index"].values
 
     # import the models
-    # financial_models = DFS["financial_models"]
+    financial_models = DFS["financial_models"]
     # artistic_models = DFS["artistic_models"]
 
     # financial
-    # best_grossWorldwide_model = financial_models["best_grossWorldwide_model"]
+    best_grossWorldwide_model = financial_models["best_grossWorldwide_model"]
     # best_openingWeekendGross = financial_models["best_openingWeekendGross"]
 
     # critique
@@ -20,17 +23,20 @@ def model(processed_data_df, year):
     # best_nominations_model = artistic_models["best_nominations_model"]
     # best_meta_score_model = artistic_models["best_meta_score_model"]
     # best_IMBD_Rating_model = artistic_models["best_IMBD_Rating_model"]
+
     # Predict assuming using all features
     # financial
     # predicted_openingWeekendGross = best_openingWeekendGross.predict(processed_data_df)
-    # predicted_grossWorldwide = best_grossWorldwide_model.predict(processed_data_df)
+    predicted_grossWorldwide = best_grossWorldwide_model.predict(processed_data_df)
+
     # rescaling using cpi dict
     # predicted_openingWeekendGross = rescale(
     #     predicted_openingWeekendGross, year, cpi_reference, cpi_df
     # )
-    # predicted_grossWorldwide = rescale(
-    #     predicted_grossWorldwide, year, cpi_reference, cpi_df
-    # )
+    predicted_grossWorldwide = rescale(
+        predicted_grossWorldwide, year, cpi_reference, cpi_df
+    )
+
     # critique
     # predicted_wins = best_wins_model.predict(processed_data_df)
     # predicted_nominations = best_nominations_model.predict(processed_data_df)
@@ -47,10 +53,10 @@ def model(processed_data_df, year):
 
     # for test purpose
     return {
-        "predicted_grossWorldwide": 2000,
-        "predicted_openingWeekendGross": 2000,
+        "predicted_grossWorldwide": float(predicted_grossWorldwide[0]),
+        "predicted_openingWeekendGross": 200,
         "predicted_wins": 3,
-        "predicted_nominations": 5,
+        "predicted_nominations": 15,
         "predicted_IMDB_Rating": 5,
         "predicted_meta_score": 6,
     }

@@ -15,13 +15,9 @@ logger = logging.getLogger("preparation")
 
 def preprocess(**kwargs):
 
-    logger.log(level=1,msg=DFS)
-
     loaded_objects = DFS["loaded_objects"]
-    logger.log(level=1,msg=loaded_objects)
-
+    financial_models = DFS["financial_models"]
     cpi_df = DFS["cpi_df"]
-    logger.log(level=1,msg=cpi_df)
 
     cpi_reference = cpi_df[cpi_df["year"] == 2023]["cpi_index"].values
     data = pd.DataFrame([kwargs])
@@ -57,6 +53,19 @@ def preprocess(**kwargs):
     data = data.drop(
         ["MPA", "release_period", "genres", "countries_origin", "year"], axis=1
     )
+
+    model = financial_models["best_grossWorldwide_model"]
+    expected_features = model.feature_names_in_
+
+    for feature in expected_features:
+        if feature not in data.columns:
+            data[feature] = 0
+
+    data = data[expected_features]
+
+    print("Expected features:", expected_features)
+    print("Current features:", data.columns)
+
     return data
 
 
@@ -68,7 +77,11 @@ def scale_duration(df, column_name, loaded_objects):
 def encode_mpa(df, column_name, loaded_objects):
     mpa_encoder = loaded_objects["mpa_encoder"]
     encoded_mpa = mpa_encoder.transform(df[[column_name]])
-    df[mpa_encoder.categories_[0]] = encoded_mpa.flatten()
+    mpa_categories = ["MPA_" + cat for cat in mpa_encoder.categories_[0]]
+    df[mpa_categories] = encoded_mpa
+
+    # Add the "Other" feature with default value 0
+    df["Other"] = 0
 
 
 def encode_release_period(df, column_name, loaded_objects):
